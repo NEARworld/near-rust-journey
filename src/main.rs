@@ -1,4 +1,5 @@
 use std::io;
+use rand::Rng;
 
 enum Habitat {
     Habitable,
@@ -12,10 +13,7 @@ struct Planet {
 
 impl Planet {
     fn is_habitable(self: &Self) -> bool {
-        match self.habitat {
-            Habitat::Habitable => true,
-            _ => false
-        }
+        matches!(self.habitat, Habitat::Habitable)
     }
 }
 
@@ -23,13 +21,19 @@ fn main() {
 
     println!("::::: Welcome to Space Colony game :::::");
     println!("Let's generate your own planet! Write your planet name.");
-    let mut planet_name = String::from("");
+    let mut planet_name = String::new();
     io::stdin().read_line(&mut planet_name).expect("Something went wrong");
-    planet_name.pop();
-    println!("Ok! Your planet name is {}.", planet_name);
+    println!("Ok! Your planet name is <{}>.", planet_name.trim());
+
+    // random Habitat variant to the gamer's planet.
+    let num: u32 = rand::thread_rng().gen_range(0..=1);
 
     let mother_planet = Planet {
-        habitat: Habitat::Habitable,
+        habitat: match num {
+            0 => Habitat::Habitable,
+            1 => Habitat::Uninhabitable,
+            2_u32..=u32::MAX => panic!("There's no variant for this random number.")
+        },
         name: planet_name
     };
     
