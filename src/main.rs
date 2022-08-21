@@ -12,7 +12,7 @@ struct Planet {
     name: String
 }
 impl Planet {
-    fn is_habitable(self) -> bool {
+    fn is_habitable(&self) -> bool {
         matches!(self.habitat, Habitat::Habitable)
     }
 }
@@ -64,6 +64,6 @@ fn main() {
     } else {
         println!("kek! The planet is uninhabitable. People are trying to build a new colonyship.");
         construct_things();
-        // println!("People are leaving {}", mother_planet.name);
+        println!("People are leaving {}", mother_planet.name);
     }
 }
