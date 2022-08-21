@@ -25,16 +25,23 @@ enum Building {
     Factory
 }
 
+enum Object {
+    Spaceship(Spaceship),
+    Building(Building)
+}
+
 fn construct_things() {
     let half_sec = time::Duration::from_secs_f32(0.5);
     print!("Constructing");
-    std::io::stdout().flush().unwrap();
-    thread::sleep(half_sec);
     for n in 1..4 {
+        flush_and_sleep(half_sec);
         print!(".");
-        std::io::stdout().flush().unwrap();
-        thread::sleep(half_sec);
     }
+    println!("");
+}
+fn flush_and_sleep(sec: time::Duration) {
+    std::io::stdout().flush().unwrap();
+    thread::sleep(sec);
 }
 
 fn main() {
@@ -47,7 +54,7 @@ fn main() {
     println!("Ok! Your planet name is <{}>.", planet_name.trim());
 
     // random Habitat variant to the gamer's planet.
-    let num: u32 = rand::thread_rng().gen_range(0..=0);
+    let num: u32 = rand::thread_rng().gen_range(1..=1);
 
     let mother_planet = Planet {
         habitat: match num {
@@ -58,12 +65,26 @@ fn main() {
         name: planet_name
     };
 
+    let mut item: Object;
+    let mut inventory = vec![];
+
     if mother_planet.is_habitable() {
         println!("Your planet is habitable. People started building a farm in this planet.");
         construct_things();
+        flush_and_sleep(time::Duration::from_secs_f32(0.5));
+        item = Object::Building(Building::Farm);
+        inventory.push(&item);
+
     } else {
         println!("kek! The planet is uninhabitable. People are trying to build a new colonyship.");
         construct_things();
-        println!("People are leaving {}", mother_planet.name);
+        println!("People are leaving {}.", mother_planet.name);
+        flush_and_sleep(time::Duration::from_secs_f32(0.5));
+        item = Object::Spaceship(Spaceship::Colonyship);
+        inventory.push(&item);
+    }
+    match item {
+        Object::Spaceship(Spaceship::Colonyship) => println!("Colony ship"),
+        _ => println!("nothing")
     }
 }
