@@ -60,29 +60,27 @@ fn main() {
         habitat: match num {
             0 => Habitat::Habitable,
             1 => Habitat::Uninhabitable,
-            2_u32..=u32::MAX => panic!("There's no variant for this random number.")
+            invalid => panic!("There's no variant for {invalid}")
         },
         name: planet_name
     };
 
-    let mut item: Object;
     let mut inventory = vec![];
 
-    if mother_planet.is_habitable() {
+    let item = if mother_planet.is_habitable() {
         println!("Your planet is habitable. People started building a farm in this planet.");
         construct_things();
         flush_and_sleep(time::Duration::from_secs_f32(0.5));
-        item = Object::Building(Building::Farm);
-        inventory.push(&item);
+        Object::Building(Building::Farm)
 
     } else {
         println!("kek! The planet is uninhabitable. People are trying to build a new colonyship.");
         construct_things();
         println!("People are leaving {}.", mother_planet.name);
         flush_and_sleep(time::Duration::from_secs_f32(0.5));
-        item = Object::Spaceship(Spaceship::Colonyship);
-        inventory.push(&item);
-    }
+        Object::Spaceship(Spaceship::Colonyship)
+    };
+    inventory.push(&item);
     match item {
         Object::Spaceship(Spaceship::Colonyship) => println!("Colony ship"),
         _ => println!("nothing")
