@@ -1,88 +1,24 @@
-use std::{thread, time};
-use std::io::{self, Write};
-use rand::Rng;
-
-enum Habitat {
-    Habitable,
-    Uninhabitable
-}
-
-struct Planet {
-    habitat: Habitat,
-    name: String
-}
-impl Planet {
-    fn is_habitable(&self) -> bool {
-        matches!(self.habitat, Habitat::Habitable)
-    }
-}
-enum Spaceship {
-    Mothership,
-    Colonyship
-}
-enum Building {
-    Farm,
-    Factory
-}
-
-enum Object {
-    Spaceship(Spaceship),
-    Building(Building)
-}
-
-fn construct_things() {
-    let half_sec = time::Duration::from_secs_f32(0.5);
-    print!("Constructing");
-    for n in 1..4 {
-        flush_and_sleep(half_sec);
-        print!(".");
-    }
-    println!("");
-}
-fn flush_and_sleep(sec: time::Duration) {
-    std::io::stdout().flush().unwrap();
-    thread::sleep(sec);
-}
+// constants can be declared in global scope
+const MY_GLOBAL_COSNTANT: i32 = 100;
+// variables cannot be declared in global scope
+let my_global_let = 200;
 
 fn main() {
+    // variables are immutable by default in rust
+    let x = 10;
+    x = 100; // impossible to assign a value to immutable variables
 
-    println!("::::: Welcome to Space Colony game :::::");
-    thread::sleep(time::Duration::from_secs(1));
-    println!("Let's generate your own planet! Write your planet name.");
-    let mut planet_name = String::new();
-    io::stdin().read_line(&mut planet_name).expect("Something went wrong");
-    println!("Ok! Your planet name is <{}>.", planet_name.trim());
+    let mut x = 10; // Shadowing a variable
+    x = 100; // possible to assign a value to mutable variables
 
-    // random Habitat variant to the gamer's planet.
-    let num: u32 = rand::thread_rng().gen_range(1..=1);
+    const my_constant: i32 = 10; // warning. Constant should be uppercases
+    const TEN = 10; // Error. Constant should have a type annotation
+    const TEN: i32 = 10; // Correct
 
-    let mother_planet = Planet {
-        habitat: match num {
-            0 => Habitat::Habitable,
-            1 => Habitat::Uninhabitable,
-            invalid => panic!("There's no variant for {invalid}")
-        },
-        name: planet_name
-    };
-
-    let mut inventory = vec![];
-
-    let item = if mother_planet.is_habitable() {
-        println!("Your planet is habitable. People started building a farm in this planet.");
-        construct_things();
-        flush_and_sleep(time::Duration::from_secs_f32(0.5));
-        Object::Building(Building::Farm)
-
-    } else {
-        println!("kek! The planet is uninhabitable. People are trying to build a new colonyship.");
-        construct_things();
-        println!("People are leaving {}.", mother_planet.name);
-        flush_and_sleep(time::Duration::from_secs_f32(0.5));
-        Object::Spaceship(Spaceship::Colonyship)
-    };
-    inventory.push(&item);
-    match item {
-        Object::Spaceship(Spaceship::Colonyship) => println!("Colony ship"),
-        _ => println!("nothing")
-    }
+    // Variables are evaluated at runtime after compile time
+    let x = 10;
+    let y = 10;
+    // Error. Constant value is evaluated at compile time.
+    // But Constant value is arithmetic operation with variables that will be evaluated at runtime
+    const SUM: i32 = x + y;
 }
