@@ -10,3 +10,8 @@ This repository was built for two reasons.
 1. Reading Rust book
 2. Share example codes
 3. Organizing what I learned or What I should understand on github issues.
+
+### Quick start to test the testing library
+```console
+$ cargo test
+```
